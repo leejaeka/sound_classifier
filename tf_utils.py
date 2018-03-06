@@ -2,6 +2,27 @@ import h5py
 import numpy as np
 import tensorflow as tf
 import math
+import glob
+from sklearn.model_selection import train_test_split
+
+def load_data():
+    filelist = glob.glob('features_mel_spectrograms/*.npy')
+    labels = []
+    data = []
+
+    for file in filelist:
+        nfile = np.load(file)
+        if 'cat' in file:
+            label = 0 #'cat'
+        else:
+            label = 1 #'dog'        
+        crop = int(nfile.shape[1] / 29)
+        for i in range(crop):
+            labels.append(label)
+            data.append(nfile[:,i*29:(i+1)*29])        
+
+    X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.1, random_state=59)
+    return np.array(X_train), np.array(X_test), np.array(y_train), np.array(y_test)
 
 def load_dataset():
     train_dataset = h5py.File('datasets/train_signs.h5', "r")
