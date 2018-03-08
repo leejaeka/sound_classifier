@@ -70,6 +70,19 @@ def plot_mel_specgram(sound_names,raw_sounds,save=False):
         i += 1
     plt.suptitle('Figure 4: Mel spectrogram')
     plt.show()
+    
+def plot_delta_specgram(sound_names,raw_sounds):
+    i = 1
+    fig = plt.figure(figsize=(25,60))
+    for n,f in zip(sound_names,raw_sounds):
+        plt.subplot(10,1,i)
+        #print(n,f)
+        mfcc_delta = librosa.feature.delta(f)
+        librosa.display.specshow(mfcc_delta)
+        plt.title(n.title())
+        i += 1
+    plt.suptitle('Figure 5: delta spectrogram')
+    plt.show()
 
 def save_mel_specgram(sound_names,raw_sounds,save=False,path=''):
     i = 1
@@ -84,9 +97,22 @@ def save_mel_specgram(sound_names,raw_sounds,save=False,path=''):
             np.save(path+filename, melogram)
         i += 1
 
+def save_delta_specgram(sound_names,raw_sounds,save=False,path='', sr=22050):
+    i = 1
+    for n,f in zip(sound_names,raw_sounds):
+        print(n,f)
+        mfcc_delta = librosa.feature.delta(f)
+        librosa.display.specshow(mfcc_delta)
+        if (save):
+            print(n.title())
+            print(mfcc_delta.shape)
+            filename, file_extension = os.path.splitext(n)
+            np.save(path+filename, mfcc_delta)
+        i += 1
+        
 import os
 import re
-relevant_path = "./../data/cats_dogs/"
+relevant_path = "./data/cats_dogs/"
 # get files from directory and do all or a few, depending on range extracted below
 sound_file_paths = [relevant_path+f for f in os.listdir(relevant_path)]
 sound_names=sound_file_paths
@@ -111,15 +137,17 @@ sr,raw_sounds = load_sound_files(sound_file_paths)
 print('sampling rate:',sr)
 
 print('going to plot wav')
-#plot_waves(sound_names,raw_sounds)
+plot_waves(sound_names,raw_sounds)
 print('going to plot specgram')
-#plot_specgram(sound_names,raw_sounds)
-#print('going to plot log_power_specgram')
-#plot_log_power_specgram(sound_names,raw_sounds)
+plot_specgram(sound_names,raw_sounds)
+print('going to plot log_power_specgram')
+plot_log_power_specgram(sound_names,raw_sounds)
 print('going to plot mel_specgram')
 #plot_mel_specgram(sound_names_smaller,raw_sounds,save=False)
 
 save_mel_specgram(sound_names_smaller,raw_sounds,save=True,path='../features_mel_spectrograms/')
+
+save_delta_specgram(sound_names_smaller,raw_sounds,save=True,path='../features_delta_spectrograms/')
 
 
 
