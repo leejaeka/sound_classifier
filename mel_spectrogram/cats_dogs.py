@@ -97,6 +97,19 @@ def save_mel_specgram(sound_names,raw_sounds,save=False,path=''):
             np.save(path+filename, melogram)
         i += 1
 
+def save_delta_specgram(sound_names,raw_sounds,save=False,path='', sr=22050):
+    i = 1
+    for n,f in zip(sound_names,raw_sounds):
+        print(n,f)
+        mfcc_delta = librosa.feature.delta(f)
+        librosa.display.specshow(mfcc_delta)
+        if (save):
+            print(n.title())
+            print(mfcc_delta.shape)
+            filename, file_extension = os.path.splitext(n)
+            np.save(path+filename, mfcc_delta)
+        i += 1
+        
 import os
 import re
 relevant_path = "./data/cats_dogs/"
@@ -133,6 +146,8 @@ print('going to plot mel_specgram')
 #plot_mel_specgram(sound_names_smaller,raw_sounds,save=False)
 
 save_mel_specgram(sound_names_smaller,raw_sounds,save=True,path='../features_mel_spectrograms/')
+
+save_delta_specgram(sound_names_smaller,raw_sounds,save=True,path='../features_delta_spectrograms/')
 
 
 
