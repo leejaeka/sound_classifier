@@ -12,6 +12,7 @@ def load_sound_files(file_paths):
     raw_sounds = []
     for fp in file_paths:
         X,sr = librosa.load(fp, sr=None)
+        print(X.shape)
         raw_sounds.append(X)
         print(sr)
     return sr,raw_sounds
@@ -78,7 +79,7 @@ def save_mel_specgram(sound_names,raw_sounds,save=False,path=''):
         melogram=librosa.power_to_db(S, ref=np.max)
         if (save):
             print(n.title())
-            #print(melogram.shape)
+            print(melogram.shape)
             filename, file_extension = os.path.splitext(n)
             np.save(path+filename, melogram)
         i += 1
@@ -116,7 +117,7 @@ print('going to plot specgram')
 #print('going to plot log_power_specgram')
 #plot_log_power_specgram(sound_names,raw_sounds)
 print('going to plot mel_specgram')
-#plot_mel_specgram(sound_names_smaller,raw_sounds,save=True)
+#plot_mel_specgram(sound_names_smaller,raw_sounds,save=False)
 
 save_mel_specgram(sound_names_smaller,raw_sounds,save=True,path='../features_mel_spectrograms/')
 
