@@ -25,6 +25,38 @@ def load_features():
     # return X_train, X_test, y_train, y_test
     return np.array(X_train, dtype=np.float32), np.array(X_test, dtype=np.float32), np.array(y_train), np.array(y_test)
 
+def load_features_with_deltas_stacking():
+    filelist_mels = glob.glob('features_mel_spectrograms/*.npy')
+    labels = []
+    data_mels = []
+    data_deltas =[]
+    
+    for file_mels in filelist_mels:
+        # first load the mels
+        nfile_mels = np.load(file_mels)
+        if 'cat' in file_mels:
+            label = 0 #'cat'
+        else:
+            label = 1 #'dog'
+        crop = int(nfile_mels.shape[1] / 28)
+        for i in range(crop):
+            labels.append(label)
+            data_mels.append(nfile_mels[:,i*28:(i+1)*28])
+        # now load the deltas
+        file_delta = file_mels.replace('features_mel_spectrograms', 'features_delta_spectograms')
+        nfile_delta = np.load(file_delta)
+        crop = int(nfile_delta.shape[1] / 28)
+        for i in range(crop):
+            data_deltas.append(nfile_delta[:,i*28:(i+1)*28])
+    # and now stack horizontally on 2nd axis, so input is e.g. 
+    # (2029, 128, 28) + (2029, 128, 28) and output is (2029, 256, 28)
+    data = np.hstack((np.array(data_mels),np.array(data_deltas)))
+    
+    # now split
+    X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.1, random_state=59)
+    # return X_train, X_test, y_train, y_test
+    return np.array(X_train, dtype=np.float32), np.array(X_test, dtype=np.float32), np.array(y_train), np.array(y_test)
+    
 def random_mini_batches(X, Y, mini_batch_size = 64, seed = 0):
     m = X.shape[0]
     mini_batches = []
