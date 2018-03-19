@@ -60,7 +60,7 @@ seed = 3
 # Network Parameters
 num_input = size_input
 num_classes = 2
-dropout = 1.00
+dropout = 0.50
 
 # tf Graph input
 X = tf.placeholder(tf.float32, [None, train_data.shape[1], train_data.shape[2]])
@@ -227,9 +227,7 @@ def run_model(num_epochs, train_data, train_labels, test_data, test_labels, mini
 
             #After running all minibatches    
             if epoch % 10 == 0:
-                print("Epoch " + str(epoch) + ", Minibatch Loss= " + \
-                      "{:.4f}".format(loss) + ", Training Accuracy= " + \
-                      "{:.3f}".format(acc))
+                print ("Cost after epoch %i: %f" % (epoch, epoch_cost))
             if epoch % 5 == 0:
                 costs.append(epoch_cost)
 
@@ -258,11 +256,13 @@ def run_model(num_epochs, train_data, train_labels, test_data, test_labels, mini
 
 # In[16]:
 
+thislearning_rate=0.001
+print('learning rate',thislearning_rate)
 
 run_model(num_epochs=100, train_data=train_data, train_labels=train_labels, 
           test_data=test_data, test_labels=test_labels, 
           minibatch_size=64, 
-          learn_rate=0.0001, seed=seed, actual_beta1=0.9, actual_beta2=0.999, actual_epsilon=1e-08)
+          learn_rate=thislearning_rate, seed=seed, actual_beta1=0.9, actual_beta2=0.999, actual_epsilon=1e-08)
 
 
 # only run line below if you want to reset and restart

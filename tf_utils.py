@@ -17,7 +17,7 @@ def load_features():
         else:
             label = 1 #'dog'
         crop = int(nfile.shape[1] / 28)
-        for i in range(crop):
+        for i in list(range(int(crop))):
             labels.append(label)
             data.append(nfile[:,i*28:(i+1)*28])
 
@@ -39,14 +39,14 @@ def load_features_with_deltas_stacking():
         else:
             label = 1 #'dog'
         crop = int(nfile_mels.shape[1] / 28)
-        for i in range(crop):
+        for i in list(range(int(crop))):
             labels.append(label)
             data_mels.append(nfile_mels[:,i*28:(i+1)*28])
         # now load the deltas
         file_delta = file_mels.replace('features_mel_spectrograms', 'features_delta_spectograms')
         nfile_delta = np.load(file_delta)
         crop = int(nfile_delta.shape[1] / 28)
-        for i in range(crop):
+        for i in list(range(int(crop))):
             data_deltas.append(nfile_delta[:,i*28:(i+1)*28])
     # and now stack horizontally on 2nd axis, so input is e.g. 
     # (2029, 128, 28) + (2029, 128, 28) and output is (2029, 256, 28)
@@ -69,16 +69,16 @@ def random_mini_batches(X, Y, mini_batch_size = 64, seed = 0):
 
     # Step 2: Partition (shuffled_X, shuffled_Y). Minus the end case.
     num_complete_minibatches = math.floor(m/mini_batch_size) # number of mini batches of size mini_batch_size in your partitionning
-    for k in range(0, num_complete_minibatches):
-        mini_batch_X = shuffled_X[k * mini_batch_size : k * mini_batch_size + mini_batch_size,:,:]
-        mini_batch_Y = shuffled_Y[k * mini_batch_size : k * mini_batch_size + mini_batch_size, :]
+    for k in list(range(0, int(num_complete_minibatches))):
+        mini_batch_X = shuffled_X[int(k * mini_batch_size) : int(k * mini_batch_size + mini_batch_size),:,:]
+        mini_batch_Y = shuffled_Y[int(k * mini_batch_size) : int(k * mini_batch_size + mini_batch_size), :]
         mini_batch = (mini_batch_X, mini_batch_Y)
         mini_batches.append(mini_batch)
 
     # Handling the end case (last mini-batch < mini_batch_size)
     if m % mini_batch_size != 0:
-        mini_batch_X = shuffled_X[num_complete_minibatches * mini_batch_size : m, :,:]
-        mini_batch_Y = shuffled_Y[num_complete_minibatches * mini_batch_size : m, :]
+        mini_batch_X = shuffled_X[int(num_complete_minibatches * mini_batch_size) : int(m), :,:]
+        mini_batch_Y = shuffled_Y[int(num_complete_minibatches * mini_batch_size) : int(m), :]
         mini_batch = (mini_batch_X, mini_batch_Y)
         mini_batches.append(mini_batch)
 
