@@ -15,59 +15,52 @@ def get_class_name(filename):
         class_name = 1
     return class_name
 
-def load_data(dataset='Train'):
-    return pd.read_pickle('../data_processed/' + dataset + '_MELandDeltas.pkl')
+def load_data(dataset='training'):
+    return pd.read_pickle('../data_processed/' + dataset + '_set.pkl')
 
-def get_dimensions(shape='mel_only', frames=None):
-    if shape=='mel_only':
-        mel_height = 128
+def get_dimensions(mel_shape, shape='stacked'):
+    if shape =='flat':
         mel_depth = 1
-    elif shape=='mel_delta_stacked':
         mel_height = 256
-        mel_depth = 1
-    elif shape=='mel_delta_channels':
-        mel_height = 128
+    elif shape == 'stacked':
         mel_depth = 2
-    mel_width = int(frames.shape[0]/mel_height/mel_depth)
+        mel_height = 128
+
+    mel_width = int(mel_shape[1])
     return mel_height, mel_width, mel_depth
 
-def extract_mel_spectrograms(dataset='Train', features=['Mel'], shape='mel_only'):
+def process_files(dataset='training', features=['Mel'], shape='mel_only', window_size=28):
 
-    df = load_data(dataset)
+    df = load_data(dataset=dataset)
 
     #Where it will be stored
-    files = []
-    labels = []
-    data = []
+    files, labels, data = [],[],[]
 
     #List of file names in the dataset
     file_names = list(df.File_id.unique())
 
-    for file in file_names:
+    for index, row in df.iterrows():
 
-        class_name = get_class_name(file)
-        #Filter for the file and extract needed features
-        frames = np.array(df[df['File_id'] == file][features])
-        frames = frames.ravel()
-        frames = np.concatenate(frames)
+        #Load the needed columns, and stack them, move the volume dim to the end
+        mel = np.array(row[features])
+        mel = np.stack((mel))
 
         #obtain some dimentions about the set to load
-        mel_height, mel_width, mel_depth = get_dimensions(shape=shape, frames=frames)
+        if len(features) > 1:
+            mel_height, mel_width, mel_depth = get_dimensions(shape=shape, mel_shape=mel.shape)
+        else:
+            mel_height, mel_width, mel_depth = mel.shape[1], mel.shape[2], mel.shape[0]
 
-        #Combine all the frames into a mel_spectrogram
-        try:
-            mel = np.reshape(frames, (mel_height, mel_width, mel_depth))
-        except ValueError:
-            print(file)
-            mel = np.reshape(frames, (mel_height, mel_width, mel_depth))
+        #each mel needs to be chopped into segments of window_size width
+        batch_size = int(mel.shape[2] / window_size)
 
+        #reshape mel and remove parts that will be ignored
+        mel = np.reshape(mel[:,:,0:batch_size*window_size], (mel_depth, mel_height, batch_size*window_size))
 
-        #each mel needs to be chopped into segments of 28 width
-        batch_size = int(mel.shape[1] / 28)
         for i in list(range(batch_size)):
-            labels.append(class_name)
-            files.append(file)
-            data.append(mel[:,i*28:(i+1)*28])
+            labels.append(row['Label'])
+            files.append(row['File_id'])
+            data.append(mel[:,:,i*window_size:(i+1)*window_size])
 
     return np.array(data, dtype=np.float32), np.array(labels), np.array(files)
 
