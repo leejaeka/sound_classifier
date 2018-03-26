@@ -31,7 +31,7 @@ def get_dimensions(shape='mel_only', frames=None):
     mel_width = int(frames.shape[0]/mel_height/mel_depth)
     return mel_height, mel_width, mel_depth
 
-def extract_mel_spectrograms(dataset='Train', features=['Mel'], shape='mel_only'):
+def extract_mel_spectrograms(dataset='Train', features=['Mel'], shape='mel_only', window_size=28):
 
     df = load_data(dataset)
 
@@ -62,12 +62,12 @@ def extract_mel_spectrograms(dataset='Train', features=['Mel'], shape='mel_only'
             mel = np.reshape(frames, (mel_height, mel_width, mel_depth))
 
 
-        #each mel needs to be chopped into segments of 28 width
-        batch_size = int(mel.shape[1] / 28)
+        #each mel needs to be chopped into segments of window_size width
+        batch_size = int(mel.shape[1] / window_size)
         for i in list(range(batch_size)):
             labels.append(class_name)
             files.append(file)
-            data.append(mel[:,i*28:(i+1)*28])
+            data.append(mel[:,i*window_size:(i+1)*window_size])
 
     return np.array(data, dtype=np.float32), np.array(labels), np.array(files)
 
