@@ -52,7 +52,7 @@ def process_files(dataset='training', features=['mfccs'], shape='flat', window_s
     return np.array(data, dtype=np.float32), np.array(labels), np.array(files)
 
 def decide_class(prediction):
-    if prediction <= 0.5:
+    if prediction < 0.5:
         file_prediction = 0
     else:
         file_prediction = 1
