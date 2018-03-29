@@ -2,6 +2,7 @@ from __future__ import print_function
 import argparse, sys, os, warnings
 import librosa
 import numpy as np
+from numpy import linalg as LA
 import keras
 from keras.models import model_from_json
 
@@ -67,6 +68,8 @@ def reshape_input(windows):
     if FLAGS.model_type.lower() == 'mel':
         return windows.reshape(windows.shape[0], input_h, input_w, input_d)
     else:
+        windows = windows - windows.mean()
+        windows = windows/LA.norm(windows)
         return windows.reshape(windows.shape[0], input_h*input_w*input_d)
 
 def predict(windows, model_type='mel'):
