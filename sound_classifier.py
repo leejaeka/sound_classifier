@@ -7,6 +7,7 @@ from keras.models import model_from_json
 
 if not sys.warnoptions:
     warnings.simplefilter("ignore")
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 FLAGS=None
 
@@ -19,6 +20,7 @@ def decide_class(prediction):
 
 def get_final_prediction(scores):
     scores = [np.argmax(s) for s in scores]
+    # print(np.mean(scores))
     return decide_class(np.mean(scores))
 
 def pre_process_file(file, model):
