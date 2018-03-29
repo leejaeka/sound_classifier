@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-def load_data(dataset='training'):
-    return pd.read_pickle('../data_processed/' + dataset + '_set.pkl')
+def load_data(dataset='training', path='../data_processed/'):
+    return pd.read_pickle(path + dataset + '_set.pkl')
 
 def get_dimensions(mel_shape, shape='stacked'):
     if shape =='flat':
@@ -16,9 +16,9 @@ def get_dimensions(mel_shape, shape='stacked'):
     mel_width = int(mel_shape[1])
     return mel_height, mel_width, mel_depth
 
-def process_files(dataset='training', features=['Mel'], shape='mel_only', window_size=28):
+def process_files(dataset='training', features=['Mel'], shape='mel_only', window_size=28, path='../data_processed/'):
 
-    df = load_data(dataset=dataset)
+    df = load_data(dataset=dataset, path=path)
 
     #Where it will be stored
     files, labels, data = [],[],[]
