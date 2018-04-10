@@ -1,3 +1,4 @@
+
 # Cats and Dogs classification challenge
 
 This project was proposed as part of a group coursework for the Data Analytics modules at [QMUL](https://www.qmul.ac.uk/). The goal is to be able to classify correctly cat and dog audio files.
@@ -8,7 +9,7 @@ The repository contains a number of folders and files described below:
 
 * **data**: raw WAV files downloaded from Kaggle.
 * **data exploration**:  Folder containing a few notebooks with some experiments and data exploration using [librosa](https://librosa.github.io/), [pandas](https://pandas.pydata.org/) and [NumPy](http://www.numpy.org/). From this experimentation, the final set of features extracted was narrowed down and justified.
-* **data_processed**: This folder contains two subfolders: ***features_mel_spectrograms*** and ***features_delta_spectograms***, as well as two dataframes that divide the dataset into training and test with features extracted and ready for analysis.
+* **data_processed**: This folder contains two subfolders: `features_mel_spectrograms` and `features_delta_spectograms`, as well as two Pandas dataframes (`training_set.pkl` and `test_set.pkl`) with the features extracted and ready for analysis.
 * **keras_model_mel**: A [Convolutional Neural Network](https://en.wikipedia.org/wiki/Convolutional_neural_network) exploration using the mel and mel-deltas spectrograms from the audio files, complete with graphs, results and summary. It initially explores several learning and dropout rates to identify potentially effective ones, then it further fine tunes this into a model (saved under saved_models).
 * **keras_model_mfcc**: A [Perceptron Neural Network](https://en.wikipedia.org/wiki/Perceptron) exploration using the MFCCs and MFCC deltas from the audio files, complete with graphs, results and summary. It initially explores several learning and dropout rates to identify potentially effective ones, then it further fine tunes this into a model (saved under saved_models).
 * **tensorflow_model**: A similar architecture to the one in the keras_model_mel folder which uses both high and low level APIs from [Google's Tensorflow](https://www.tensorflow.org/) library. It was important to try lower level libraries to understand the programming differences involved.
