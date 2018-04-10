@@ -25,3 +25,5 @@ In addition to this, there're multiple [Jupyter Notebooks](http://jupyter.org/) 
 Results are encouraging and a high accuracy (~89-90%) is achieved despite the small sample size.
 
 ![results summary](results_summary.png)
+
+Special thanks to [Eurico Covas](https://github.com/euricocovas), [Ines Nolasco](https://github.com/madzimia) and Nadir Badji for their work on this project
