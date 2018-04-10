@@ -68,7 +68,7 @@ def random_shuffle(dataframe, seed=0, test_size=0.3, num_classes=2):
 def main():
 
     #path for audio files folder:
-    raw_files_path = 'data/cats_dogs/'
+    raw_files_path = '../data/cats_dogs/'
 
     #call the function that will process the data.
     audio, sr, channels, file_names = load_and_read_data(raw_files_path)
@@ -86,7 +86,7 @@ def main():
                                 'Mel_deltas': mel_deltas,
                                 'mfccs': mfccs,
                                 'mfcc_deltas': mfcc_deltas,
-                                'File_id': [f.replace('data/cats_dogs/', '').replace('.wav', '') for f in file_names]
+                                'File_id': [f.replace('../data/cats_dogs/', '').replace('.wav', '') for f in file_names]
                                })
 
     #Adding the class label to the dataframe
@@ -96,8 +96,8 @@ def main():
     training_df, test_df = random_shuffle(features_df, seed=1)
 
     #save as pickles
-    training_df.to_pickle('data_processed/'+ 'training_set.pkl')
-    test_df.to_pickle('data_processed/'+ 'test_set.pkl')
+    training_df.to_pickle('../data_processed/'+ 'training_set.pkl')
+    test_df.to_pickle('../data_processed/'+ 'test_set.pkl')
 
 if __name__ == '__main__':
     main()
