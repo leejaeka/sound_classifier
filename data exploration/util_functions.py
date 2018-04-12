@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 import pandas as pd
 import librosa
-import math, glob, re
+import math, glob, re, audioread
 from sklearn.utils import shuffle
 
 def capture_class(file_id):
