@@ -15,10 +15,16 @@ def capture_class(file_id):
         class_name = -1
     return class_name
 
+def colour_class(x):
+    if x == 0:
+        return 'red' # cat
+    else:
+        return 'blue' # dog
+
 def random_shuffle(dataframe, seed=0, test_size=0.3, num_classes=2):
-    
+
     training_frames, test_frames = [],[]
-    
+
     #This assumes we're labeling our classes from 0 to num_classes
     for i in range(num_classes):
         #Filter on the class and shuffle
@@ -27,19 +33,19 @@ def random_shuffle(dataframe, seed=0, test_size=0.3, num_classes=2):
         total_rows = shuffled_df.shape[0]
         test_rows = int(total_rows*test_size)
         shuffled_df.iloc[0:]
-        
+
         training_frames.append(shuffled_df.iloc[0:total_rows-test_rows])
-        test_frames.append(shuffled_df.iloc[total_rows-test_rows:total_rows])        
-    
+        test_frames.append(shuffled_df.iloc[total_rows-test_rows:total_rows])
+
     training_df = pd.concat(training_frames)
     test_df = pd.concat(test_frames)
     return training_df, test_df
 
-def load_and_save_mel_data(files_path, sr=16000, dest_path=''): 
-    
+def load_and_save_mel_data(files_path, sr=16000, dest_path=''):
+
     # get all wav files in folder
     sound_file_paths = glob.glob(files_path + '*.wav')
-    
+
     #iterate over files and extract mels, save them as numpy files.
     for file in sound_file_paths:
         ts, sr = librosa.load(file,sr=sr)
@@ -48,11 +54,11 @@ def load_and_save_mel_data(files_path, sr=16000, dest_path=''):
         filename = file.split('/')[-1].split('.')[0]
         np.save(dest_path+filename, melogram)
 
-def load_and_save_mel_delta_data(files_path, sr=16000, dest_path=''): 
-    
+def load_and_save_mel_delta_data(files_path, sr=16000, dest_path=''):
+
     # get all wav files in folder
     sound_file_paths = glob.glob(files_path + '*.wav')
-    
+
     #iterate over files and extract MFCCs, save them as numpy files.
     for file in sound_file_paths:
         ts, sr = librosa.load(file,sr=sr)
@@ -60,10 +66,10 @@ def load_and_save_mel_delta_data(files_path, sr=16000, dest_path=''):
         melogram=librosa.power_to_db(S, ref=np.max)
         mfcc_delta = librosa.feature.delta(melogram)
         filename = file.split('/')[-1].split('.')[0]
-        np.save(dest_path+filename, mfcc_delta) 
-        
+        np.save(dest_path+filename, mfcc_delta)
+
 def load_features_with_deltas_stacking_nosplit():
-    filelist_mels = glob.glob('data_processed/features_mel_spectrograms/*.npy')
+    filelist_mels = glob.glob('../data_processed/features_mel_spectrograms/*.npy')
     labels = []
     data_mels = []
     data_deltas =[]
@@ -94,7 +100,7 @@ def load_features_with_deltas_stacking_nosplit():
     return np.array(data, dtype=np.float32), np.array(labels, dtype=np.int16)
 
 def load_features_with_deltas_stacking_nosplit_noslicing():
-    filelist_mels = glob.glob('data_processed/features_mel_spectrograms/*.npy')
+    filelist_mels = glob.glob('../data_processed/features_mel_spectrograms/*.npy')
     labels = []
     data_mels = []
     data_deltas =[]
@@ -113,3 +119,25 @@ def load_features_with_deltas_stacking_nosplit_noslicing():
     # return data and labels for unsupersized learning
 
     return data_mels, np.array(labels, dtype=np.int16)
+
+def load_sound_files(file_paths):
+    sound_file_paths = glob.glob(file_paths + '*.wav')
+    raw_sounds, raw_labels = [], []
+
+    for fp in sound_file_paths:
+        X,sr = librosa.load(fp, sr=None)
+        if (fp.find('barking') != -1):
+            labelfile=1
+        else:
+            labelfile=0
+        raw_labels.append(labelfile)
+        raw_sounds.append(X)
+    return sr,raw_sounds,raw_labels
+
+def energy(raw_sound):
+    energy = sum(abs(raw_sound**2))/len(raw_sound)
+    return energy
+
+def rmse(raw_sound):
+    rmse = np.sum(librosa.feature.rmse(y=raw_sound))
+    return rmse
