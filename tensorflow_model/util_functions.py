@@ -3,12 +3,6 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import math
 
-# import h5py
-# import tensorflow as tf
-
-# import glob
-# import re
-
 def load_data(dataset='training'):
     return pd.read_pickle('../data_processed/' + dataset + '_set.pkl')
 

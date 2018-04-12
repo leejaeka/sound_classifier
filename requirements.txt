@@ -1,0 +1,16 @@
+argparse
+
+numpy
+pandas
+sklearn
+matplotlib
+
+statistics
+scipy
+h5py
+
+librosa
+audioread
+
+keras
+tensorflow
